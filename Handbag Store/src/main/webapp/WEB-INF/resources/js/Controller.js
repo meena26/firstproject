@@ -1,0 +1,54 @@
+var myapp=angular.module("myapp",[])
+.controller("handbagController",function($scope,$http){
+
+	$scope.getHandbags = function(){
+			alert("get handbags")
+		   $http.get('http://localhost:7016/welcomehelloworld/getHandbagsList').success(function (data){
+		       $scope.handbags = data;
+		   });
+		};
+		$scope.addToCart=function(isbn){
+			//alert('inside add to cart')
+			   $http.put('http://localhost:7016/welcomehelloworld/cart/add/'+isbn).success(function(){
+				   alert('Added Successfully')
+			   })
+		   }
+		$scope.refreshCart=function(){
+			$http.get('http://localhost:7016/welcomehelloworld/cart/getCart/'+$scope.cartId).success(function(data){
+				$scope.cart=data;
+			})
+		    }
+		    $scope.getCart=function(cartId){
+		    	alert('inside getcart')
+			$scope.cartId=cartId;
+			$scope.refreshCart(cartId);
+		    }
+
+		    $scope.removeFromCart=function(cartItemId){
+				$http.put(
+		'http://localhost:7016/welcomehelloworld/cart/removecartitem/'+cartItemId)
+			.success(function(){
+				$scope.refreshCart();
+			})
+		    }
+
+		    $scope.clearCart=function(){
+				$http.put(
+		'http://localhost:7016/welcomehelloworld/cart/removeAllItems/'+$scope.cartId)
+			.success(function(){
+				$scope.refreshCart();
+			});
+		    }
+
+		    $scope.calculateGrandTotal=function(){
+		    	var grandTotal=0.0
+		    	for(var i=0;i<$scope.cart.cartItems.length;i++)
+		    		grandTotal=grandTotal+$scope.cart.cartItems[i].totalPrice;
+		    	return grandTotal;
+		    }
+
+
+		});
+
+
+
